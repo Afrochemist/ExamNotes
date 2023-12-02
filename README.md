@@ -4,3 +4,4 @@ This repository contains notes on various exams.
 - PNPT
 - OSWP
 - PJMT
+- PJWT
