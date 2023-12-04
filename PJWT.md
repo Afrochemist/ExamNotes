@@ -11,4 +11,7 @@
     - httprobe
     - gowitness
 - Authentication/Authorization Attacks
-
+ - Brute-force Attacks
+ - Attacking MFA
+ - IDOR
+- Broken Access Control 
