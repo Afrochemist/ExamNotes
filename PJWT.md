@@ -2,16 +2,24 @@
 
 - Recon 
   - Tools
+    - curl
+      - curl -I <website>
+      - curl -I -L <website>    
     - nmap
+      - nmap -443 -A <website>
+      - nmap -p443 --script=http-server-header <website> 
     - ffuf
+      - ffuf -w <path to wordlist>:FUZZ -u <url/FUZZ> 
     - dirb
+      - dirb <url>
+      - dirb <url> -u <path to wordlist> 
     - google
     - subfinder
     - assetfinder
     - httprobe
     - gowitness
 - Authentication/Authorization Attacks
- - Brute-force Attacks
- - Attacking MFA
- - IDOR
-- Broken Access Control 
+  - Brute-force Attacks
+  - Attacking MFA
+  - IDOR 
+  - Broken Access Control 
