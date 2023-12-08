@@ -1,7 +1,6 @@
 
 <h1>Initial Attack AD</h1>
-<h3>LLMNR(link local multi-name resolution)</h3>
-	- executes when dns fails
+<h3>LLMNR(link local multi-name resolution)</h3> - executes when dns fails
 	
 	<b>Step 1: Run responder</b>
 	  <em>python Responder.py -I tun0 -rdwv</em>
