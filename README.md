@@ -5,3 +5,4 @@ This repository contains notes on various exams.
 - OSWP
 - PJMT
 - PJWT
+- PJOR
