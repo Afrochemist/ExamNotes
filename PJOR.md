@@ -24,3 +24,12 @@
 - jimpl
 - google maps
 - geoguessr.com
+
+
+### Email OSINT
+- hunter.io
+- phonebook.cz
+- google extension (paid)
+- email hippo
+- email checker
+- voila Nobert
