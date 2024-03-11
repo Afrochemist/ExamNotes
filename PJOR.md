@@ -25,7 +25,6 @@
 - google maps
 - geoguessr.com
 
-
 ### Email OSINT
 - hunter.io
 - phonebook.cz
@@ -34,7 +33,7 @@
 - email checker
 - voila Nobert
 
-### Pssword OSINT
+### PAssword OSINT
 - dehashed.com
 - weleakinfo
 - leakcheck
@@ -42,9 +41,20 @@
 - scylla.sh
 - haveIbeenpwnd
 
-
-
-
-
+### Website OSINT
+- builtwith
+- Domain Dosser
+- Dnslytics
+- SpyonWeb
+- VirusTotal
+- Visual Ping
+- Backlink Watch
+- ViewDNS
+- urlscanio
+- DNSdumpster
+- WebCheck
+- crt.sh
+- Shodan.io
+- Wayback Machine
 
 
