@@ -57,4 +57,6 @@
 - Shodan.io
 - Wayback Machine
 
-
+### Business OSINT
+- Open Corporates
+- AI HIT
