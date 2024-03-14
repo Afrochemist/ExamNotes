@@ -60,3 +60,8 @@
 ### Business OSINT
 - Open Corporates
 - AI HIT
+
+### Wifi OSINT
+- wigle.net
+
+
