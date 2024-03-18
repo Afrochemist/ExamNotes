@@ -64,6 +64,7 @@
 		- psexec.py domain/user:password@ipaddress
 		- smbexec.py domain/user:password@ipaddress
 		- wmiexec.py domain/user:password@ipaddress
+
 - IPv6 Attacks(interact with the dns server which may grab info from the DC)
 	- download mitm6 from github fox-it/mitm6
 	- mitm6 -d <domain>
@@ -81,7 +82,7 @@
 <h1>Post-Compromise Enumeration</h1>
 	- PowerView
 		- powershell -ep bypass
-		- . .\PowerView.ps1
+		- ..\PowerView.ps1
 		- Get-NetDomain
 		- Get-NetDomainController
 		- Get-DomainPolicy
@@ -103,8 +104,13 @@
 		- Invoke-ShareFinder(find file shares)
 		- Get-NetGPO
 		- Get-NetGPO | select displayname, whenchanged
+
 - BloodHound
-	- start writing here
+	- Need to add notes
+- Plumhound
+- PingCastle
+- ldapdomaindump
+
 
 <h1>Post-Compromise Attacks</h1>
 - pass the password attacks
