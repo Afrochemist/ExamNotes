@@ -276,3 +276,10 @@
 		- goldenticket = persistence
 		- also look like silver ticket
 		- 
+
+- Post Exploitation
+	 - File Transfer Review
+		- Powershell download
+		- certutil
+	- Pivoting
+
