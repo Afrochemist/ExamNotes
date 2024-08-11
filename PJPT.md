@@ -80,30 +80,31 @@
 	- (need to read article)
 
 <h1>Post-Compromise Enumeration</h1>
-	- PowerView
-		- powershell -ep bypass
-		- ..\PowerView.ps1
-		- Get-NetDomain
-		- Get-NetDomainController
-		- Get-DomainPolicy
-		- (Get-DomainPolicy)."system access"
-		- Get-NetUser
-		- Get-NetUser | select cn
-		- Get-NetUser | select samaccountname
-		- Get-NetUser | select description
-		- Get-UserProperty -Properties pwdlastset
-		- Get-UserProperty -Properties logoncount
-		- Get-UserProperty -Properties badpwdcount
-		- Get-NetComputer
-		- Get-NetComputer -FullData
-		- Get-NetComputer -FullData | select OperatingSystem
-		- Get-NetGroup
-		- Get-NetGroup -GroupName "Domain Admins"
-		-  Get-NetGroup -GroupName *admin*
-		-  Get-NetGroupMember -GroupName "Domain Admins"
-		- Invoke-ShareFinder(find file shares)
-		- Get-NetGPO
-		- Get-NetGPO | select displayname, whenchanged
+- PowerView
+	
+	- powershell -ep bypass
+	- ..\PowerView.ps1
+	- Get-NetDomain
+	- Get-NetDomainController
+	- Get-DomainPolicy
+	- (Get-DomainPolicy)."system access"
+	- Get-NetUser
+	- Get-NetUser | select cn
+	- Get-NetUser | select samaccountname
+	- Get-NetUser | select description
+	- Get-UserProperty -Properties pwdlastset
+	- Get-UserProperty -Properties logoncount
+	- Get-UserProperty -Properties badpwdcount
+	- Get-NetComputer
+	- Get-NetComputer -FullData
+	- Get-NetComputer -FullData | select OperatingSystem
+	- Get-NetGroup
+	- Get-NetGroup -GroupName "Domain Admins"
+	-  Get-NetGroup -GroupName *admin*
+	-  Get-NetGroupMember -GroupName "Domain Admins"
+	- Invoke-ShareFinder(find file shares)
+	- Get-NetGPO
+	- Get-NetGPO | select displayname, whenchanged
 
 - BloodHound
 	- Need to add notes
