@@ -279,9 +279,10 @@
 		- also look like silver ticket
 		- 
 
-- Post Exploitation
+- Post Exploitation(need to add the commands to each bullet point)
 	 - File Transfer Review
 		- Powershell download
 		- certutil
-	- Pivoting
-
+	- Pivoting(need to add notes for each pivot tool)
+		- chisel
+		- ligolo-ng(optional)
